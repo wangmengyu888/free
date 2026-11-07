@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>王梦雨 · 个人作品集 | 金融数学 × AI × 视觉叙事</title>
+  <style>
+    /* ===== 重置 & 变量（茶棕 / 浅卡其 / 米白 · 国风纸鸢调） ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #faf7f2;
+      --surface: rgba(255, 255, 255, .84);      /* 半透明：让水墨层隐约透出 */
+      --surface-alt: rgba(245, 239, 231, .80);
+      --text-primary: #3b2e26;
+      --text-secondary: #6b5e54;
+      --border-light: #e7dfd5;
+      --primary: #8b6b5c;
+      --primary-deep: #6e5142;
+      --primary-soft: #b8a088;
+      --accent: #d9c8b2;
+      --seal: #b5432e;                 /* 印章红点缀 */
+      --shadow-sm: 0 4px 12px rgba(59, 46, 38, 0.04);
+      --shadow-md: 0 14px 34px rgba(59, 46, 38, 0.08);
+      --radius: 20px;
+      --radius-sm: 12px;
+      --transition: 220ms ease;
+      --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      --font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'STSong', serif;
+    }
+
+    [data-theme="dark"] {
+      --bg: #211d1a;
+      --surface: rgba(45, 41, 37, .86);
+      --surface-alt: rgba(57, 51, 46, .84);
+      --text-primary: #f0e8e0;
+      --text-secondary: #c0b3a8;
+      --border-light: #4a423b;
+      --primary: #c2a48f;
+      --primary-deep: #d8bda9;
+      --primary-soft: #9c8577;
+      --accent: #5e5349;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 14px 34px rgba(0, 0, 0, 0.35);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .25s ease, color .25s ease;
+      overflow-x: hidden;
+    }
+
+    /* 背景纸纹 */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: -1;
+      background-image:
+        radial-gradient(circle at 15% 10%, rgba(139,107,92,.04) 0%, transparent 42%),
+        radial-gradient(circle at 85% 75%, rgba(217,200,178,.09) 0%, transparent 48%);
+      pointer-events: none;
+    }
+
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 22px 70px; position: relative; z-index: 1; }
+
+    /* ===== 滚动入场动画 ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .75s cubic-bezier(.2,.65,.3,1), transform .75s cubic-bezier(.2,.65,.3,1);
+      transition-delay: var(--d, 0ms);
+      will-change: opacity, transform;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+      * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* ===== 导航栏 ===== */
+    .navbar {
+      position: sticky; top: 14px; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px;
+      padding: 11px 22px; margin: 16px 0 20px;
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-radius: 60px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+    }
+    .nav-brand { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
+    .nav-name { font-weight: 800; font-size: 1.15rem; color: var(--primary); letter-spacing: 1px; }
+    .nav-year { font-size: .72rem; letter-spacing: 2.5px; color: var(--text-secondary); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 4px 15px; }
+    .nav-links a {
+      text-decoration: none; color: var(--text-secondary);
+      font-size: .9rem; font-weight: 500; padding: 4px 0;
+      border-bottom: 2px solid transparent;
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .nav-links a:hover, .nav-links a:focus-visible { color: var(--primary); border-bottom-color: var(--primary); }
+    .nav-actions { display: flex; align-items: center; gap: 9px; }
+    .icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 1px solid var(--border-light); background: var(--surface);
+      color: var(--text-secondary); cursor: pointer; font-size: 1.05rem;
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+    }
+    .icon-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); transform: scale(1.05); }
+
+    /* ===== Hero ===== */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 88% 18%, rgba(181,67,46,.06) 0%, transparent 40%),
+        linear-gradient(135deg, var(--surface) 0%, var(--surface-alt) 100%);
+      border-radius: var(--radius);
+      padding: 52px 46px 46px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-light);
+      margin-bottom: 0;
+    }
+    .hero::after {  /* 角框装饰，呼应国风PPT的边角线 */
+      content: ''; position: absolute; left: 22px; top: 22px;
+      width: 34px; height: 34px;
+      border-left: 2px solid var(--primary-soft); border-top: 2px solid var(--primary-soft);
+      opacity: .55;
+    }
+    .hero-frame-r {
+      position: absolute; right: 22px; bottom: 22px;
+      width: 34px; height: 34px;
+      border-right: 2px solid var(--primary-soft); border-bottom: 2px solid var(--primary-soft);
+      opacity: .55;
+    }
+    .hero-status {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 100px;
+      background: var(--surface); border: 1px solid var(--border-light);
+      font-size: .78rem; font-weight: 600; letter-spacing: 2px;
+      color: var(--text-secondary); margin-bottom: 20px;
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #4c9e6b; animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(76,158,107,.45); }
+      55% { box-shadow: 0 0 0 7px rgba(76,158,107,0); }
+    }
+    .hero-grid { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 26px; }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.3rem, 5.2vw, 3.4rem);
+      font-weight: 900; letter-spacing: .02em; line-height: 1.18;
+    }
+    .hero-title .thin { color: var(--primary); font-weight: 700; }
+    .hero-title .seal-mini {
+      display: inline-block; vertical-align: .32em;
+      background: var(--seal); color: #fff;
+      font-size: .8rem; font-weight: 700; letter-spacing: 2px;
+      padding: 4px 9px; border-radius: 6px; margin-left: 12px;
+      transform: rotate(6deg);
+    }
+    .hero-sub {
+      font-size: 1.02rem; color: var(--text-secondary);
+      max-width: 660px; margin-top: 16px;
+    }
+    .hero-sub em { font-style: normal; color: var(--primary); font-weight: 700; }
+    .badge-cloud { display: flex; flex-wrap: wrap; gap: 9px; margin: 18px 0 4px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 15px; border-radius: 100px;
+      background: var(--surface); border: 1px solid var(--border-light);
+      font-size: .84rem; font-weight: 500; color: var(--text-secondary);
+      transition: border-color var(--transition), background var(--transition), color var(--transition), transform var(--transition);
+      white-space: nowrap;
+    }
+    .badge:hover { transform: translateY(-2px); border-color: var(--primary-soft); color: var(--primary); }
+    .badge.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .badge.primary:hover { background: var(--primary-deep); color: #fff; }
+    .contact-buttons { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 22px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 24px; border-radius: 40px;
+      font-weight: 600; font-size: .9rem; text-decoration: none;
+      border: none; cursor: pointer;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      background: var(--primary); color: #fff;
+      box-shadow: 0 6px 14px rgba(139,107,92,.22);
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 22px rgba(139,107,92,.28); background: var(--primary-deep); }
+    .btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); box-shadow: none; }
+    .btn-outline:hover { background: var(--primary); color: #fff; }
+    .btn .arr { transition: transform var(--transition); }
+    .btn:hover .arr { transform: translate(2px, -2px); }
+    .avatar {
+      width: 128px; height: 128px; border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--surface);
+      box-shadow: var(--shadow-md), 0 0 0 1px var(--border-light);
+      background: var(--accent);
+      flex-shrink: 0;
+      transition: transform var(--transition);
+    }
+    .avatar:hover { transform: scale(1.03) rotate(2deg); }
+
+    /* ===== Hero 动画纸鸢装饰 ===== */
+    .kite-deco { position: absolute; pointer-events: none; z-index: 0; opacity: .9; }
+    .kite-a { right: 6%; top: 8%; animation: kiteFloat 7s ease-in-out infinite; }
+    .kite-b { right: 20%; top: 52%; width: .72em; opacity: .5; animation: kiteFloat 9s ease-in-out 1.2s infinite reverse; }
+    @keyframes kiteFloat {
+      0%, 100% { transform: translateY(0) rotate(-4deg); }
+      50% { transform: translateY(-16px) rotate(5deg); }
+    }
+    .cloud {
+      position: absolute; pointer-events: none; opacity: .35; z-index: 0;
+      animation: drift linear infinite;
+    }
+    .cloud-a { left: -8%; top: 16%; width: 180px; animation-duration: 46s; }
+    .cloud-b { left: -14%; bottom: 12%; width: 130px; animation-duration: 62s; animation-delay: -20s; }
+    @keyframes drift { to { transform: translateX(calc(100vw + 40%)); } }
+
+    /* ===== 跑马灯 ===== */
+    .marquee {
+      overflow: hidden; white-space: nowrap;
+      border-block: 1px solid var(--border-light);
+      background: var(--surface-alt);
+      margin: 26px 0 44px;
+      padding: 13px 0;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+    .marquee-track { display: inline-flex; gap: 0; animation: marquee 26s linear infinite; will-change: transform; }
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+    .marquee-track span {
+      font-size: .86rem; font-weight: 700; letter-spacing: 3px;
+      color: var(--text-secondary); padding: 0 18px;
+    }
+    .marquee-track .star { color: var(--seal); }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+
+    /* ===== 杂志式板块标题（仿 01 / CORE PROFILE） ===== */
+    .section { margin-bottom: 58px; }
+    .sec-tag {
+      display: flex; align-items: baseline; gap: 10px;
+      font-weight: 800; letter-spacing: 2.5px;
+      color: var(--primary); font-size: .95rem;
+      margin-bottom: 6px;
+    }
+    .sec-tag .slash { color: var(--accent); }
+    .sec-tag .en { color: var(--text-secondary); font-weight: 600; font-size: .8rem; letter-spacing: 3.5px; }
+    .sec-title {
+      font-family: var(--font-serif);
+      font-size: 1.75rem; font-weight: 900; letter-spacing: .01em;
+      margin-bottom: 8px;
+    }
+    .sec-desc { color: var(--text-secondary); font-size: .95rem; max-width: 720px; margin-bottom: 26px; }
+    .sec-rule { width: 46px; height: 4px; background: var(--primary); border-radius: 4px; margin-bottom: 26px; }
+    .matrix-title {
+      font-family: var(--font-serif); font-size: 1.2rem; font-weight: 900;
+      letter-spacing: .02em; display: flex; align-items: baseline; gap: 12px;
+      margin-top: 8px;
+    }
+    .matrix-title .en-sub { font-family: var(--font-sans); font-size: .72rem; font-weight: 600; letter-spacing: 3px; color: var(--text-secondary); }
+
+    /* ===== 亮点数据卡（数字滚动） ===== */
+    .highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 18px; }
+    .stat-card {
+      background: var(--surface); border-radius: var(--radius-sm);
+      padding: 26px 22px; border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content: ''; position: absolute; right: -22px; top: -22px;
+      width: 74px; height: 74px; border-radius: 50%;
+      background: var(--surface-alt); transition: transform .3s ease;
+    }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--primary-soft); }
+    .stat-card:hover::before { transform: scale(1.7); }
+    .stat-number {
+      font-size: 2.15rem; font-weight: 800; color: var(--primary);
+      line-height: 1.15; margin-bottom: 4px; position: relative;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-number small { font-size: 1.15rem; font-weight: 700; }
+    .stat-label { font-size: .88rem; color: var(--text-secondary); font-weight: 500; position: relative; }
+
+    /* ===== 项目卡片（编号 + 类型 + 三段式） ===== */
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 34px 36px;
+      margin-bottom: 26px;
+      transition: box-shadow var(--transition), border-color var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .project-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary-soft); }
+    .pc-top { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+    .pc-num {
+      font-size: 1.9rem; font-weight: 800; color: var(--accent);
+      font-style: italic; line-height: 1; letter-spacing: 1px;
+      transition: color var(--transition);
+    }
+    .project-card:hover .pc-num { color: var(--primary-soft); }
+    .pc-type { font-size: .78rem; font-weight: 700; letter-spacing: 2.5px; color: var(--text-secondary); text-transform: uppercase; }
+    .pc-badge {
+      margin-left: auto;
+      font-size: .76rem; font-weight: 700;
+      padding: 5px 13px; border-radius: 100px;
+      background: color-mix(in srgb, var(--seal) 10%, transparent);
+      color: var(--seal); border: 1px solid color-mix(in srgb, var(--seal) 32%, transparent);
+    }
+    .pc-badge.green {
+      background: color-mix(in srgb, #4c9e6b 10%, transparent);
+      color: #3c7f55; border-color: color-mix(in srgb, #4c9e6b 35%, transparent);
+    }
+    .pc-title { font-family: var(--font-serif); font-size: 1.65rem; font-weight: 900; margin-bottom: 4px; }
+    .pc-sub { color: var(--primary); font-weight: 600; font-size: .98rem; margin-bottom: 16px; }
+    .pc-lead { color: var(--text-secondary); max-width: 780px; margin-bottom: 18px; }
+    .pc-block {
+      background: var(--surface-alt); border-left: 3px solid var(--primary-soft);
+      border-radius: 10px; padding: 14px 18px; margin-bottom: 12px;
+      font-size: .93rem; color: var(--text-primary);
+    }
+    .pc-block b { color: var(--primary); margin-right: 6px; }
+    .pc-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 4px; }
+    .pc-tags span {
+      font-size: .78rem; font-weight: 600; letter-spacing: 1px;
+      padding: 4px 12px; border-radius: 100px;
+      background: var(--surface-alt); border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+    }
+    .pc-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+    .pc-links a {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--primary); font-weight: 700; font-size: .9rem;
+      text-decoration: none; border-bottom: 2px solid transparent;
+      padding-bottom: 2px; transition: border-color var(--transition);
+    }
+    .pc-links a:hover { border-color: var(--primary); }
+    .pc-links a .arr { transition: transform var(--transition); }
+    .pc-links a:hover .arr { transform: translate(3px, -3px); }
+    .pc-qr { text-align: center; margin-left: 6px; }
+    .pc-qr img { width: 86px; height: 86px; border-radius: 10px; border: 1px solid var(--border-light); cursor: pointer; }
+    .pc-qr div { font-size: .72rem; color: var(--text-secondary); margin-top: 4px; }
+    .pc-with-qr { display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+    .pc-with-qr .pc-main { flex: 1; min-width: 300px; }
+
+    /* 汇报 PPT 三图（已并入风格画廊） */
+    .p-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 20px 0 6px; }
+    .p-gallery figure {
+      background: var(--surface-alt); border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm); overflow: hidden; cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .p-gallery figure:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+    .p-gallery img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; transition: transform .3s ease; }
+    .p-gallery figure:hover img { transform: scale(1.04); }
+    .p-gallery figcaption { padding: 10px 14px; font-size: .82rem; color: var(--text-secondary); text-align: center; }
+    .p-gallery figcaption b { color: var(--primary); }
+
+    /* ===== PPT Tabs 画廊 ===== */
+    .tab-nav { display: flex; flex-wrap: wrap; gap: 8px; background: var(--surface-alt); padding: 8px; border-radius: 60px; border: 1px solid var(--border-light); margin-bottom: 18px; }
+    .tab-btn {
+      padding: 10px 22px; border-radius: 40px; border: none; background: transparent;
+      font-weight: 600; font-size: .9rem; color: var(--text-secondary);
+      cursor: pointer; transition: all var(--transition); font-family: inherit; white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--primary); }
+    .tab-btn[aria-selected="true"] { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
+    .tab-panel {
+      background: var(--surface); border-radius: var(--radius);
+      padding: 28px 32px; border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm); animation: fadeIn .35s ease;
+    }
+    .tab-panel[hidden] { display: none; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .gallery-scroll {
+      display: flex; gap: 16px; overflow-x: auto;
+      padding: 6px 4px 18px; scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin; scrollbar-color: var(--primary-soft) var(--surface-alt);
+    }
+    .gallery-scroll::-webkit-scrollbar { height: 6px; }
+    .gallery-scroll::-webkit-scrollbar-track { background: var(--surface-alt); border-radius: 10px; }
+    .gallery-scroll::-webkit-scrollbar-thumb { background: var(--primary-soft); border-radius: 10px; }
+    .gallery-item {
+      flex: 0 0 250px; scroll-snap-align: start;
+      background: var(--surface-alt); border-radius: var(--radius-sm);
+      overflow: hidden; border: 1px solid var(--border-light);
+      box-shadow: 0 18px 30px -12px rgba(59, 46, 38, .22);
+      cursor: pointer; position: relative;
+      margin-top: 20px;
+      animation: galleryBob 5.5s ease-in-out infinite alternate;
+      transition: box-shadow var(--transition), border-color var(--transition);
+    }
+    .gallery-item:nth-child(even) { margin-top: 54px; animation-delay: -2.75s; }
+    .gallery-item:hover { animation-play-state: paused; box-shadow: 0 30px 46px -14px rgba(59, 46, 38, .3); border-color: var(--primary-soft); }
+    /* 悬空投影：卡片下方的水墨椭圆阴影 */
+    .gallery-item::after {
+      content: ''; position: absolute; left: 10%; right: 10%; bottom: -13px;
+      height: 13px; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(ellipse, rgba(59,46,38,.20) 0%, transparent 68%);
+      transition: transform var(--transition), opacity var(--transition);
+    }
+    .gallery-item:hover::after { transform: scaleX(.82); opacity: .65; }
+    @keyframes galleryBob { from { transform: translateY(0); } to { transform: translateY(-9px); } }
+    .gallery-item img { width: 100%; height: 152px; object-fit: cover; display: block; background: var(--accent); transition: transform .3s ease; }
+    .gallery-item:hover img { transform: scale(1.05); }
+    .gallery-caption { padding: 10px 14px; font-size: .82rem; font-weight: 500; color: var(--text-secondary); text-align: center; background: var(--surface); }
+
+    /* ===== 全局水墨背景层：远山流水 · 流云 · 振翅仙鹤（文字之下，贯穿全页） ===== */
+    .ink-bg {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; user-select: none; overflow: hidden;
+    }
+    /* 远山瀑布水墨视频（豆包水印已逐帧去除） */
+    .mountain-wrap { position: absolute; right: -3%; bottom: -4%; width: min(32vw, 400px); }
+    .ink-waterfall {
+      width: 100%; display: block; opacity: .15; mix-blend-mode: multiply;
+      /* 抹掉视频左上角自带的「豆包AI生成」水印（该处为天空留白，不影响画面） */
+      -webkit-mask-image: radial-gradient(ellipse 28% 7% at 11% 4%, transparent 60%, #000 100%);
+      mask-image: radial-gradient(ellipse 28% 7% at 11% 4%, transparent 60%, #000 100%);
+    }
+    [data-theme="dark"] .ink-waterfall { mix-blend-mode: screen; filter: invert(1); opacity: .12; }
+
+    /* 云纹：黑底白云 → 亮色模式反相后正片叠底成淡墨云；半透明漂浮在文字后
+       （原图右下角平台水印已用 clip-path 裁掉） */
+    .ink-cloud {
+      mix-blend-mode: multiply; filter: invert(1);
+      clip-path: inset(0 0 6.5% 0);
+    }
+    [data-theme="dark"] .ink-cloud { mix-blend-mode: screen; filter: none; }
+    .ink-bg .ink-cloud { position: absolute; }
+    .ic-1 { top: 3%;  left: -480px; width: 470px; opacity: .14; animation: cloudAcross 84s linear infinite; }
+    .ic-2 { top: 26%; left: -400px; width: 330px; opacity: .10; animation: cloudAcross 122s linear infinite; animation-delay: -38s; }
+    .ic-3 { top: 55%; left: -460px; width: 420px; opacity: .11; animation: cloudAcross 98s linear infinite; animation-delay: -64s; }
+    .ic-4 { top: 76%; left: -380px; width: 300px; opacity: .085; animation: cloudAcross 134s linear infinite; animation-delay: -96s; }
+    .ic-5 { top: 11%; left: -540px; width: 520px; opacity: .065; animation: cloudAcross 156s linear infinite; animation-delay: -124s; }
+    [data-theme="dark"] .ic-1, [data-theme="dark"] .ic-2, [data-theme="dark"] .ic-3,
+    [data-theme="dark"] .ic-4, [data-theme="dark"] .ic-5 { opacity: .14; }
+    @keyframes cloudAcross {
+      to { transform: translateX(calc(100vw + 620px)); }
+    }
+
+    /* 底部持续流动的水墨水纹（动态流水，始终位于文字之下） */
+    .ink-stream {
+      position: absolute; left: -6%; bottom: -2%; width: 112%; height: 36vh;
+      opacity: .16; animation: streamSway 30s ease-in-out infinite alternate;
+    }
+    .ink-stream path { fill: none; stroke: var(--primary-soft); stroke-linecap: round; }
+    .ink-stream .st-1 { stroke-width: 2.4; stroke-dasharray: 26 34; animation: streamFlow 16s linear infinite; }
+    .ink-stream .st-2 { stroke-width: 1.8; stroke-dasharray: 18 26; opacity: .8; animation: streamFlow 23s linear infinite reverse; }
+    .ink-stream .st-3 { stroke-width: 3.4; stroke-dasharray: 42 56; opacity: .5; animation: streamFlow 32s linear infinite; }
+    @keyframes streamFlow { to { stroke-dashoffset: -640; } }
+    @keyframes streamSway {
+      from { transform: translateX(-2.5%); }
+      to   { transform: translateX(2.5%); }
+    }
+
+    /* 振翅仙鹤：视频保留真实振翅，再叠加「航线起伏 + 浮沉」两层运动，
+       看起来是乘风滑翔，而不是机械平移；整体半透明，浮在文字之下 */
+    .crane-layer {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; user-select: none; overflow: hidden;
+    }
+    .flap-crane { position: absolute; will-change: transform; }
+    .fc-1 { top: 8%; left: -430px; width: 300px; opacity: .45; animation: craneSweepA 54s linear infinite; }
+    .fc-2 { top: 46%; left: auto; right: -360px; width: 210px; opacity: .32; animation: craneSweepB 78s linear infinite; animation-delay: -30s; }
+    [data-theme="dark"] .fc-1 { opacity: .38; }
+    [data-theme="dark"] .fc-2 { opacity: .28; }
+    /* 向右飞：先爬升，再掠过，再轻微下沉，形成自然弧线 */
+    @keyframes craneSweepA {
+      0%   { transform: translate3d(0, 6vh, 0) rotate(-2deg); }
+      16%  { transform: translate3d(18vw, -3vh, 0) rotate(2.5deg); }
+      34%  { transform: translate3d(38vw, 6vh, 0) rotate(-1.5deg); }
+      52%  { transform: translate3d(58vw, -5vh, 0) rotate(2deg); }
+      70%  { transform: translate3d(78vw, 4vh, 0) rotate(-2.5deg); }
+      86%  { transform: translate3d(94vw, -4vh, 0) rotate(1.5deg); }
+      100% { transform: translate3d(calc(100vw + 520px), 2vh, 0) rotate(-1deg); }
+    }
+    /* 向左飞：另一只逆向往返，避免同向排队 */
+    @keyframes craneSweepB {
+      0%   { transform: translate3d(0, -3vh, 0) rotate(1.5deg); }
+      18%  { transform: translate3d(-16vw, 4vh, 0) rotate(-2deg); }
+      38%  { transform: translate3d(-36vw, -5vh, 0) rotate(2deg); }
+      56%  { transform: translate3d(-56vw, 3vh, 0) rotate(-1.5deg); }
+      74%  { transform: translate3d(-76vw, -4vh, 0) rotate(2.5deg); }
+      88%  { transform: translate3d(-90vw, 2vh, 0) rotate(-2deg); }
+      100% { transform: translate3d(calc(-100vw - 480px), -3vh, 0) rotate(1deg); }
+    }
+    /* 气流浮沉：让身体随振翅轻微上下 */
+    .fc-bob { animation: fcBob 4.8s ease-in-out infinite; }
+    .fc-2 .fc-bob { animation-duration: 6.2s; animation-delay: -2.3s; }
+    @keyframes fcBob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      35%      { transform: translateY(-8px) rotate(1.2deg); }
+      70%      { transform: translateY(6px) rotate(-.8deg); }
+    }
+    .fc-flap { position: relative; transform-origin: 52% 46%; }
+    .fc-1 .fc-flap { transform: scaleX(-1); }   /* 朝右飞 */
+    .fc-2 .fc-flap { transform: none; }         /* 朝左飞 */
+    .fc-flap video {
+      width: 100%; display: block;
+      mix-blend-mode: multiply;                /* 白底融进纸面，只留水墨鹤身 */
+      /* 抹掉 AI 生成视频左上角自带的「豆包AI生成」水印（与鹤身不重叠） */
+      -webkit-mask-image: radial-gradient(ellipse 22% 8% at 8% 5.5%, transparent 64%, #000 100%);
+      mask-image: radial-gradient(ellipse 22% 8% at 8% 5.5%, transparent 64%, #000 100%);
+    }
+    [data-theme="dark"] .fc-flap video { filter: invert(1) brightness(1.05); mix-blend-mode: screen; }
+
+    /* 流动水墨水纹分隔 */
+    .water-deco { display: block; width: 100%; height: 74px; margin: -8px 0 30px; opacity: .5; pointer-events: none; }
+    .water-deco path {
+      fill: none; stroke: var(--primary-soft); stroke-linecap: round;
+      stroke-dasharray: 14 18;
+      animation: waterFlow 2.8s linear infinite;
+    }
+    .water-deco path:nth-child(2) { animation-duration: 3.6s; opacity: .7; }
+    .water-deco path:nth-child(3) { animation-duration: 4.4s; opacity: .45; }
+    @keyframes waterFlow { to { stroke-dashoffset: -64; } }
+
+    /* ===== 证书 ===== */
+    .cert-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .cert-item {
+      background: var(--surface-alt); border-radius: var(--radius-sm);
+      border: 1px solid var(--border-light); overflow: hidden; cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+    .cert-item:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--primary-soft); }
+    .cert-item img { width: 100%; height: 140px; object-fit: cover; display: block; background: var(--surface); }
+    .cert-item .cert-name {
+      padding: 11px 12px; font-size: .82rem; font-weight: 600;
+      color: var(--text-primary); text-align: center;
+      background: var(--surface); border-top: 1px solid var(--border-light); line-height: 1.45;
+    }
+
+    /* ===== 技能 ===== */
+    .skill-matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 30px; }
+    .skill-category h3 { font-size: 1rem; font-weight: 800; color: var(--primary); margin-bottom: 14px; letter-spacing: 1px; }
+    .skill-item { margin-bottom: 15px; }
+    .skill-label { display: flex; justify-content: space-between; font-size: .88rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+    .progress-bar { width: 100%; height: 8px; background: var(--surface-alt); border-radius: 20px; overflow: hidden; }
+    .progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--primary-soft), var(--primary));
+      border-radius: 20px;
+      transition: width 1.1s cubic-bezier(.25,.7,.3,1);
+    }
+
+    /* ===== 教育 ===== */
+    .edu-card { display: flex; flex-wrap: wrap; gap: 26px; align-items: flex-start; }
+    .edu-text { flex: 2; min-width: 280px; }
+    .edu-text h3 { font-size: 1.35rem; font-weight: 800; margin-bottom: 4px; }
+    .edu-meta { font-size: .9rem; color: var(--text-secondary); margin-bottom: 12px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 10px; }
+    .chips span {
+      font-size: .8rem; font-weight: 600; padding: 5px 14px;
+      border-radius: 100px; background: var(--surface-alt);
+      border: 1px solid var(--border-light); color: var(--text-secondary);
+    }
+
+    /* ===== 联系 ===== */
+    .contact-wrap { display: flex; flex-wrap: wrap; gap: 28px; align-items: center; }
+    .contact-list { flex: 1; min-width: 300px; display: grid; gap: 12px; }
+    .contact-item {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--surface); border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm); padding: 14px 20px;
+      cursor: pointer; transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+      font-size: .95rem;
+    }
+    .contact-item:hover { transform: translateX(6px); border-color: var(--primary-soft); box-shadow: var(--shadow-sm); }
+    .contact-item .ci-ico { font-size: 1.25rem; }
+    .contact-item .ci-label { font-size: .76rem; color: var(--text-secondary); letter-spacing: 1.5px; font-weight: 700; }
+    .contact-item .ci-val { font-weight: 700; color: var(--text-primary); }
+    .qr-card { text-align: center; background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 16px 20px; cursor: pointer; transition: transform var(--transition), box-shadow var(--transition); }
+    .qr-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .qr-card img { width: 130px; height: 130px; border-radius: 8px; }
+    .qr-card div { font-size: .78rem; color: var(--text-secondary); margin-top: 8px; font-weight: 600; }
+
+    /* ===== 返回顶部 ===== */
+    .back-top {
+      position: fixed; bottom: 28px; right: 28px;
+      width: 46px; height: 46px; border-radius: 50%;
+      background: var(--primary); color: #fff; border: none;
+      font-size: 1.35rem; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: var(--shadow-md);
+      opacity: 0; transform: translateY(16px); pointer-events: none;
+      transition: opacity .25s, transform .25s, background .25s;
+      z-index: 200;
+    }
+    .back-top.show { opacity: 1; transform: none; pointer-events: auto; }
+    .back-top:hover { background: var(--primary-deep); }
+
+    /* ===== 灯箱 ===== */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(20, 15, 12, .78);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .25s ease; padding: 22px;
+    }
+    .lightbox.active { opacity: 1; pointer-events: auto; }
+    .lightbox img {
+      max-width: 92vw; max-height: 86vh;
+      border-radius: 12px; box-shadow: 0 30px 70px rgba(0,0,0,.55);
+      object-fit: contain; background: var(--surface);
+    }
+    .lightbox-close {
+      position: absolute; top: 18px; right: 28px;
+      font-size: 2rem; color: #fff; cursor: pointer;
+      background: none; border: none; line-height: 1;
+    }
+
+    /* ===== 页脚 ===== */
+    footer {
+      margin-top: 64px; padding: 30px 0 14px; text-align: center;
+      font-size: .85rem; color: var(--text-secondary);
+      border-top: 1px solid var(--border-light);
+    }
+    footer .foot-brand { font-weight: 800; letter-spacing: 3px; color: var(--primary); margin-bottom: 6px; font-size: .95rem; }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 820px) {
+      .hero { padding: 38px 26px 34px; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .avatar { margin: 0 auto; }
+      .hero-title .seal-mini { margin-left: 8px; }
+      .kite-a { right: 4%; top: 4%; width: 84px; }
+      .kite-b { display: none; }
+      .project-card { padding: 26px 22px; }
+      .p-gallery img { aspect-ratio: 16/10; }
+      .tab-panel { padding: 22px 18px; }
+      .gallery-item { flex: 0 0 205px; }
+      .contact-item:hover { transform: none; }
+      .mountain-wrap { width: 66vw; }
+      .fc-1 { width: 150px; left: -190px; }
+      .fc-2 { width: 105px; right: -160px; }
+      .ic-1 { width: 260px; } .ic-2 { width: 210px; } .ic-3 { width: 240px; }
+      .ic-4 { width: 190px; } .ic-5 { width: 280px; }
+      .ink-stream { height: 26vh; }
+      .water-deco { height: 52px; }
+    }
+    @media (max-width: 480px) {
+      .highlights { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .stat-card { padding: 18px 16px; }
+      .stat-number { font-size: 1.6rem; }
+      .p-gallery { grid-template-columns: 1fr; }
+    }
+
+    /* ===== 打印 ===== */
+    @media print {
+      body { background: #fff; color: #000; }
+      .navbar, .back-top, .icon-btn, .btn, .btn-outline, .lightbox,
+      .marquee, .kite-deco, .cloud, .pc-qr, .qr-card,
+      .ink-bg, .ink-deco, .crane, .ink-cloud, .water-deco, .flap-crane, .crane-layer { display: none !important; }
+      .hero, .project-card, .tab-panel, .stat-card, .cert-item { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+      .tab-nav { display: none; }
+      .tab-panel { display: block !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .progress-fill { background: #8b6b5c !important; }
+      .gallery-scroll { overflow: visible; flex-wrap: wrap; }
+      .gallery-item { flex: 0 0 160px; margin-top: 0 !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======= 全局水墨背景层：远山流水 · 流云 · 振翅仙鹤（半透明，位于文字后方，贯穿全页） ======= -->
+  <div class="ink-bg" aria-hidden="true">
+    <!-- 远山瀑布水墨动态视频（「豆包AI生成」水印已用蒙版遮除） -->
+    <div class="mountain-wrap">
+      <video class="ink-waterfall" src="ink-waterfall.mp4" autoplay muted loop playsinline preload="auto"></video>
+    </div>
+    <!-- 半透明流云（水墨云纹，缓慢横穿；原图水印已裁除） -->
+    <img class="ink-cloud ic-1" src="ink-clouds.jpg" alt="">
+    <img class="ink-cloud ic-2" src="ink-clouds.jpg" alt="">
+    <img class="ink-cloud ic-3" src="ink-clouds.jpg" alt="">
+    <img class="ink-cloud ic-4" src="ink-clouds.jpg" alt="">
+    <img class="ink-cloud ic-5" src="ink-clouds.jpg" alt="">
+    <!-- 底部动态流水：水墨水纹持续流动 -->
+    <svg class="ink-stream" viewBox="0 0 1440 320" preserveAspectRatio="none" aria-hidden="true">
+      <path class="st-1" d="M-30 118 C 150 74, 300 162, 470 120 S 760 70, 930 124 S 1210 168, 1470 108"/>
+      <path class="st-2" d="M-30 168 C 190 214, 340 126, 520 170 S 820 214, 990 164 S 1250 112, 1470 176"/>
+      <path class="st-3" d="M-30 236 C 170 186, 350 286, 540 236 S 830 180, 1010 238 S 1280 288, 1470 224"/>
+    </svg>
+  </div>
+  <div class="crane-layer" aria-hidden="true">
+    <div class="flap-crane fc-1">
+      <div class="fc-bob">
+        <div class="fc-flap">
+          <video src="crane1.webm" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+      </div>
+    </div>
+    <div class="flap-crane fc-2">
+      <div class="fc-bob">
+        <div class="fc-flap">
+          <video src="crane2.webm" autoplay muted loop playsinline preload="auto"></video>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- ======= 导航栏 ======= -->
+    <nav class="navbar" aria-label="主导航">
+      <div class="nav-brand">
+        <span class="nav-name">王梦雨</span>
+        <span class="nav-year">PORTFOLIO / 2026</span>
+      </div>
+      <div class="nav-links">
+        <a href="#hero">首页</a>
+        <a href="#highlights">数据</a>
+        <a href="#projects">项目</a>
+        <a href="#skills">技能</a>
+        <a href="#certs">证书</a>
+        <a href="#contact">联系</a>
+      </div>
+      <div class="nav-actions">
+        <button class="icon-btn" id="themeToggle" aria-label="切换深浅色模式">🌓</button>
+        <button class="icon-btn" id="printBtn" aria-label="打印简历">🖨️</button>
+      </div>
+    </nav>
+
+    <!-- ======= Hero ======= -->
+    <header id="hero" class="hero">
+      <span class="hero-frame-r" aria-hidden="true"></span>
+
+      <!-- 动画纸鸢装饰 -->
+      <svg class="kite-deco kite-a" width="120" height="150" viewBox="0 0 120 150" aria-hidden="true">
+        <g>
+          <path d="M60 8 L104 62 L60 96 L16 62 Z" fill="rgba(139,107,92,.16)" stroke="#8b6b5c" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M60 8 L60 96 M16 62 L104 62" stroke="#8b6b5c" stroke-width="1.6" opacity=".65"/>
+          <circle cx="60" cy="52" r="13" fill="rgba(181,67,46,.28)"/>
+          <path d="M60 96 C 52 112, 70 122, 60 138" stroke="#b8a088" stroke-width="2" fill="none"/>
+          <path d="M54 110 l9 -4 M57 124 l10 -3" stroke="#b5432e" stroke-width="2.4" stroke-linecap="round" opacity=".75"/>
+          <circle cx="60" cy="96" r="2.6" fill="#b5432e"/>
+        </g>
+      </svg>
+      <svg class="kite-deco kite-b" width="86" height="108" viewBox="0 0 120 150" aria-hidden="true">
+        <path d="M60 8 L104 62 L60 96 L16 62 Z" fill="rgba(217,200,178,.5)" stroke="#b8a088" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M60 8 L60 96 M16 62 L104 62" stroke="#b8a088" stroke-width="1.4" opacity=".6"/>
+        <path d="M60 96 C 66 110, 50 122, 58 138" stroke="#b8a088" stroke-width="2" fill="none"/>
+      </svg>
+      <!-- 漂移云 -->
+      <svg class="cloud cloud-a" viewBox="0 0 200 60" aria-hidden="true">
+        <path d="M20 44 Q34 22 58 30 Q66 12 90 18 Q112 8 128 24 Q154 18 160 38 Q180 40 178 50 L24 50 Q14 50 20 44Z" fill="#d9c8b2"/>
+      </svg>
+      <svg class="cloud cloud-b" viewBox="0 0 200 60" aria-hidden="true">
+        <path d="M20 44 Q34 22 58 30 Q66 12 90 18 Q112 8 128 24 Q154 18 160 38 Q180 40 178 50 L24 50 Q14 50 20 44Z" fill="#d9c8b2"/>
+      </svg>
+      <!-- 水墨云纹与振翅仙鹤已移至全局背景层 -->
+      <div class="hero-grid" style="position:relative; z-index:1;">
+        <div class="hero-content">
+          <span class="hero-status reveal"><span class="dot" aria-hidden="true"></span>大一在读 · 山东财经大学 · 济南</span>
+          <h1 class="hero-title reveal" style="--d:80ms;">王梦雨<span class="thin"> · 金融数学</span><span class="seal-mini">梦雨</span></h1>
+          <p class="hero-sub reveal" style="--d:160ms;">
+            持有 <em>阿里 AI 高级训练师</em>、<em>讯飞 Prompt 工程师</em>、<em>智能体工程师</em>、<em>华为 AI 技能认证</em> 四项权威认证；
+            熟练运用 Vibe Coding 独立开发《霓虹战机》双端小游戏；精通四种风格 PPT 设计；擅长 AIGC 绘画创作与视频剪辑，能独立完成从 AI 生成到成片交付的完整链路——把想法做出来，再一步步改好。
+          </p>
+          <div class="badge-cloud reveal" style="--d:240ms;">
+            <span class="badge primary">阿里AI高级训练师</span>
+            <span class="badge primary">讯飞Prompt工程师</span>
+            <span class="badge primary">智能体工程师</span>
+            <span class="badge primary">华为AI技能认证</span>
+            <span class="badge">Vibe Coding</span>
+            <span class="badge">Python</span>
+            <span class="badge">AIGC 创作</span>
+            <span class="badge">视频剪辑</span>
+            <span class="badge">金融建模</span>
+            <span class="badge">视觉叙事</span>
+          </div>
+          <div class="contact-buttons reveal" style="--d:320ms;">
+            <a class="btn" href="tel:15865660153">📞 15865660153</a>
+            <button class="btn btn-outline" id="copyEmailBtn">📧 复制邮箱</button>
+            <button class="btn btn-outline" id="copyWechatBtn">💬 微信号</button>
+          </div>
+        </div>
+        <img class="avatar reveal" style="--d:200ms;" src="微信头像.jpg" alt="王梦雨微信头像" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'%3E%3Ccircle cx=\'60\' cy=\'60\' r=\'60\' fill=\'%23d9c8b2\'/%3E%3C/svg%3E'">
+      </div>
+    </header>
+
+    <!-- 水墨流水分隔 -->
+    <svg class="water-deco" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 45 Q 100 18 200 45 T 400 45 T 600 45 T 800 45 T 1000 45 T 1200 45" stroke-width="3"/>
+      <path d="M0 58 Q 100 84 200 58 T 400 58 T 600 58 T 800 58 T 1000 58 T 1200 58" stroke-width="2"/>
+      <path d="M0 32 Q 150 52 300 32 T 600 32 T 900 32 T 1200 32" stroke-width="1.5"/>
+    </svg>
+
+    <!-- ======= 跑马灯 ======= -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track" id="marqueeTrack">
+        <span>AI EXPLORER</span><span class="star">✳</span>
+        <span>VIBE CODER</span><span class="star">✳</span>
+        <span>PPT DESIGNER</span><span class="star">✳</span>
+        <span>AIGC CREATOR</span><span class="star">✳</span>
+        <span>VIDEO EDITOR</span><span class="star">✳</span>
+        <span>FIN-MATH FRESHMAN</span><span class="star">✳</span>
+        <span>STORYTELLER</span><span class="star">✳</span>
+      </div>
+    </div>
+
+    <!-- ======= 01 亮点数据 ======= -->
+    <section id="highlights" class="section">
+      <div class="sec-tag reveal">01 <span class="slash">/</span> <span class="en">HIGHLIGHTS</span></div>
+      <h2 class="sec-title reveal" style="--d:60ms;">先用数字认识我</h2>
+      <div class="sec-rule reveal" style="--d:100ms;"></div>
+      <div class="highlights">
+        <div class="stat-card reveal" style="--d:0ms;">
+          <div class="stat-number"><span data-count="4">0</span><small> 项</small></div>
+          <div class="stat-label">AI 权威技能认证</div>
+        </div>
+        <div class="stat-card reveal" style="--d:80ms;">
+          <div class="stat-number"><span data-count="1">0</span><small> 款</small></div>
+          <div class="stat-label">Vibe Coding 独立开发小游戏</div>
+        </div>
+        <div class="stat-card reveal" style="--d:160ms;">
+          <div class="stat-number"><span data-count="30">0</span><small> %</small></div>
+          <div class="stat-label">原型搭建效率提升</div>
+        </div>
+        <div class="stat-card reveal" style="--d:240ms;">
+          <div class="stat-number"><span data-count="10">0</span><small> +</small></div>
+          <div class="stat-label">不同风格 PPT 作品</div>
+        </div>
+        <div class="stat-card reveal" style="--d:280ms;">
+          <div class="stat-number"><span data-count="1">0</span><small> 条</small></div>
+          <div class="stat-label">AIGC 全链路 · 生成到成片</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= 02 精选项目 ======= -->
+    <section id="projects" class="section" style="position:relative;">
+      <div class="sec-tag reveal">02 <span class="slash">/</span> <span class="en">SELECTED PROJECTS</span></div>
+      <h2 class="sec-title reveal" style="--d:60ms;">精选项目</h2>
+      <p class="sec-desc reveal" style="--d:100ms;">从 AI 小游戏到 AIGC 创作——不同的路，同一个习惯：动手做出来，再一步步改好。</p>
+
+      <!-- 项目 01 · 霓虹战机 -->
+      <article class="project-card reveal">
+        <div class="pc-top">
+          <span class="pc-num">01</span>
+          <span class="pc-type">Game · Vibe Coding</span>
+          <span class="pc-badge green">已上线 · 可游玩</span>
+        </div>
+        <h3 class="pc-title">霓虹战机</h3>
+        <p class="pc-sub">独立完成的纵版射击小游戏 · 电脑 / 手机双端适配</p>
+        <p class="pc-lead">借助 AI 辅助生成代码，从玩法设计、素材配色到双端操控全流程独立完成，把「会打游戏」变成「会做游戏」。</p>
+        <div class="pc-block"><b>我做的部分</b>玩法与关卡设计 · AI 辅助编码与调优 · 移动端触控与键盘双操作模式适配。</div>
+        <div class="pc-block"><b>当前结果</b>已部署到 GitHub Pages，点击「立即试玩」直接跳转线上游戏地址。</div>
+        <div class="pc-tags"><span>JavaScript</span><span>H5 Canvas</span><span>AI 辅助开发</span><span>响应式适配</span></div>
+        <div class="pc-links">
+          <a href="https://wangmengyu888.github.io/fly3/" target="_blank" rel="noopener noreferrer">▶ 立即试玩 <span class="arr">↗</span></a>
+        </div>
+      </article>
+
+      <!-- 项目 02 · 多风格 PPT -->
+      <article class="project-card reveal">
+        <div class="pc-top">
+          <span class="pc-num">02</span>
+          <span class="pc-type">Visual · Presentation Design</span>
+          <span class="pc-badge">10+ 件作品 · 4 种风格</span>
+        </div>
+        <h3 class="pc-title">多风格 PPT 设计</h3>
+        <p class="pc-sub">简约 / 党政 / 国风 / 科技 · 内容结构化 × 视觉呈现</p>
+        <p class="pc-lead">根据不同场景独立完成全案设计，擅长把散乱的材料整理成有节奏的视觉叙事，作品被团队复用。下方向同一方向错落悬浮排布的，是全部作品缩略。</p>
+
+        <div class="gallery-scroll" style="margin-top:20px;">
+          <div class="gallery-item" data-img="鸢起-封面.jpg"><img src="鸢起-封面.jpg" alt="汇报PPT封面页" loading="lazy"><div class="gallery-caption">汇报封面页</div></div>
+          <div class="gallery-item" data-img="鸢起-目录.jpg"><img src="鸢起-目录.jpg" alt="汇报PPT目录页" loading="lazy"><div class="gallery-caption">汇报目录页</div></div>
+          <div class="gallery-item" data-img="鸢起-展示.jpg"><img src="鸢起-展示.jpg" alt="汇报PPT作品展示页" loading="lazy"><div class="gallery-caption">作品展示页</div></div>
+          <div class="gallery-item" data-img="简约1.jpg"><img src="简约1.jpg" alt="简约风格PPT作品1" loading="lazy"><div class="gallery-caption">简约风格 · 1</div></div>
+          <div class="gallery-item" data-img="简约2.jpg"><img src="简约2.jpg" alt="简约风格PPT作品2" loading="lazy"><div class="gallery-caption">简约风格 · 2</div></div>
+          <div class="gallery-item" data-img="党政1.jpg"><img src="党政1.jpg" alt="党政风格PPT作品1" loading="lazy"><div class="gallery-caption">党政风格 · 1</div></div>
+          <div class="gallery-item" data-img="党政2.jpg"><img src="党政2.jpg" alt="党政风格PPT作品2" loading="lazy"><div class="gallery-caption">党政风格 · 2</div></div>
+          <div class="gallery-item" data-img="国风1.jpg"><img src="国风1.jpg" alt="国风风格PPT作品1" loading="lazy"><div class="gallery-caption">国风风格 · 1</div></div>
+          <div class="gallery-item" data-img="国风2.jpg"><img src="国风2.jpg" alt="国风风格PPT作品2" loading="lazy"><div class="gallery-caption">国风风格 · 2</div></div>
+          <div class="gallery-item" data-img="国风3.jpg"><img src="国风3.jpg" alt="国风风格PPT作品3" loading="lazy"><div class="gallery-caption">国风风格 · 3</div></div>
+          <div class="gallery-item" data-img="科技1.jpg"><img src="科技1.jpg" alt="科技风格PPT作品1" loading="lazy"><div class="gallery-caption">科技风格 · 1</div></div>
+          <div class="gallery-item" data-img="科技2.jpg"><img src="科技2.jpg" alt="科技风格PPT作品2" loading="lazy"><div class="gallery-caption">科技风格 · 2</div></div>
+          <div class="gallery-item" data-img="科技3.jpg"><img src="科技3.jpg" alt="科技风格PPT作品3" loading="lazy"><div class="gallery-caption">科技风格 · 3</div></div>
+          <div class="gallery-item" data-img="科技4.jpg"><img src="科技4.jpg" alt="科技风格PPT作品4" loading="lazy"><div class="gallery-caption">科技风格 · 4</div></div>
+        </div>
+      </article>
+
+      <!-- 项目 03 · AIGC & 剪辑 -->
+      <article class="project-card reveal">
+        <div class="pc-top">
+          <span class="pc-num">03</span>
+          <span class="pc-type">AIGC · Visual Creation</span>
+          <span class="pc-badge">AI 全链路作品</span>
+        </div>
+        <h3 class="pc-title">AIGC 创作 & 视频剪辑</h3>
+        <p class="pc-sub">AI 绘画 · 图生视频 · 剪映成片</p>
+        <p class="pc-lead">以 AIGC 为核心生产力，贯通「提示词 → 图像 → 视频 → 成片」的完整创作链路：独立完成系列风格化 AI 插画与动态短片，并反向赋能 PPT 与项目展示。</p>
+        <div class="pc-block"><b>我做的部分</b>提示词工程与 AI 绘画系列创作 · 多图风格统一调修 · 图生视频动效生成 · 剪映专业版剪辑（粗剪 / 卡点 / 转场 / 调色 / 配音 / 字幕包装）。</div>
+        <div class="pc-block"><b>成果</b>形成多组风格化插画与剪辑成片；AIGC 素材直接用于 PPT 页面动效与作品展示，实现「创意—生成—剪辑—展示」的作品闭环。</div>
+        <div class="pc-tags">
+          <span>AI 绘画</span><span>图生视频</span><span>剪映剪辑</span><span>PS 后期</span><span>调色字幕</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- ======= 03 技能 ======= -->
+    <section id="skills" class="section">
+      <div class="sec-tag reveal">03 <span class="slash">/</span> <span class="en">SKILLS</span></div>
+      <h2 class="sec-title reveal" style="--d:60ms;">能力 & 技能</h2>
+      <div class="sec-rule reveal" style="--d:100ms;"></div>
+
+      <!-- 能力详情标签面板 -->
+      <div class="tabs" id="experienceTabs" style="margin-bottom:44px;">
+        <div class="tab-nav" role="tablist" aria-label="能力分类">
+          <button class="tab-btn" role="tab" aria-selected="true" aria-controls="panel-ai" id="tab-ai" tabindex="0">🤖 AI & 编程</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-fin" id="tab-fin" tabindex="-1">📊 金融数学</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-aigc" id="tab-aigc" tabindex="-1">🎬 AIGC & 剪辑</button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-comm" id="tab-comm" tabindex="-1">💬 沟通教学</button>
+        </div>
+
+        <!-- Tab 1: AI & 编程 -->
+        <div class="tab-panel" role="tabpanel" id="panel-ai" aria-labelledby="tab-ai">
+          <h3 style="margin-bottom:14px; font-weight:800;">AI 辅助开发 & 编程基础</h3>
+          <p style="color:var(--text-secondary); margin-bottom:18px; font-size:.95rem;">
+            掌握 Python 基础语法与数据处理逻辑，熟练借助 AI 辅助生成网页代码，高效完成网站原型搭建与视觉设计，将原型产出周期缩短 30%。
+          </p>
+          <ul style="color:var(--text-secondary); list-style:none; display:flex; flex-direction:column; gap:11px;">
+            <li>✅ Vibe Coding 独立开发《霓虹战机》小游戏，适配电脑 / 手机双端操作模式</li>
+            <li>✅ 借助 AI 辅助生成网页代码，结合 HTML/CSS 独立完成几十个页面的原型设计</li>
+            <li>✅ 熟练运用 AI 工具进行内容生成、代码辅助、原型设计</li>
+            <li>✅ 掌握提示词工程（Prompt）、智能体（Agent）搭建与模型训练</li>
+            <li>✅ Python 基础语法、数据处理逻辑，能完成简单数据分析与可视化</li>
+          </ul>
+        </div>
+
+        <!-- Tab 2: 金融数学 -->
+        <div class="tab-panel" role="tabpanel" id="panel-fin" aria-labelledby="tab-fin" hidden>
+          <h3 style="margin-bottom:14px; font-weight:800;">金融数学专业能力</h3>
+          <p style="color:var(--text-secondary); margin-bottom:18px; font-size:.95rem;">
+            具备金融数学专业背景，熟悉概率统计、金融建模、计量分析等基础方法，高中阶段数理成绩优异。
+          </p>
+          <ul style="color:var(--text-secondary); list-style:none; display:flex; flex-direction:column; gap:11px;">
+            <li>📐 主修课程：金融数学、概率论与数理统计、金融工程、计量经济学、Python 程序设计、数据库原理等</li>
+            <li>📊 高中多次荣获学习优胜奖、三好学生、学习标兵、联考二等奖、三等奖</li>
+            <li>📈 具备扎实的数理基础与持续优异的学习能力</li>
+            <li>🧮 能够运用 Python/Excel 等工具完成数据处理与基础建模</li>
+          </ul>
+        </div>
+
+        <!-- Tab 3: AIGC & 剪辑 -->
+        <div class="tab-panel" role="tabpanel" id="panel-aigc" aria-labelledby="tab-aigc" hidden>
+          <h3 style="margin-bottom:14px; font-weight:800;">AIGC 创作 & 视频剪辑</h3>
+          <p style="color:var(--text-secondary); margin-bottom:18px; font-size:.95rem;">
+            以 AI 生成内容（AIGC）为核心生产力，贯通「文本 → 图像 → 视频 → 成片」完整链路：能独立完成 AI 绘画与风格化调修、AI 视频/动效生成，并熟练使用剪映等工具完成剪辑、调色、配音与字幕，把创意快速落成可交付的作品。
+          </p>
+          <ul style="color:var(--text-secondary); list-style:none; display:flex; flex-direction:column; gap:11px;">
+            <li>🎨 AI 绘画创作：熟练运用主流 AI 绘画工具，通过提示词迭代与参数控制稳定产出目标风格画面，完成过多组系列化插画创作与逐页统一调修</li>
+            <li>🎬 AI 视频生成：掌握图生视频 / 文生视频工作流，为静态画面与 PPT 页面生成动效镜头，让平面作品「动起来」</li>
+            <li>✂️ 视频剪辑：熟练使用剪映（专业版）完成粗剪、卡点、转场、调色、配音与字幕包装，独立交付成片</li>
+            <li>🖼️ 图像后期：具备 PS 基础与 AI 修图能力，能完成抠图、去水印、画质增强、多图风格统一等后期处理</li>
+            <li>🔗 整合落地：将 AIGC 素材与剪辑成片反哺 PPT 与项目展示，形成「创意—生成—剪辑—展示」的完整作品闭环</li>
+          </ul>
+        </div>
+
+        <!-- Tab 4: 沟通能力 -->
+        <div class="tab-panel" role="tabpanel" id="panel-comm" aria-labelledby="tab-comm" hidden>
+          <h3 style="margin-bottom:14px; font-weight:800;">沟通表达 & 教学引导</h3>
+          <p style="color:var(--text-secondary); margin-bottom:18px; font-size:.95rem;">
+            性格亲和、表达清晰，善于倾听与共情。长期从事高中课外辅导、累计带教多名高三学生，精准定位知识薄弱点、针对性查漏补缺，助力多名基础薄弱学生显著提分。
+          </p>
+          <ul style="color:var(--text-secondary); list-style:none; display:flex; flex-direction:column; gap:11px;">
+            <li>✅ 沟通表达：逻辑清晰、通俗易懂，能把复杂知识点讲得浅显明白</li>
+            <li>✅ 倾听共情：善于捕捉对方的真实诉求与薄弱环节，快速建立信任</li>
+            <li>✅ 引导式讲解：耐心拆解难题，引导独立思考、建立解题思路</li>
+            <li>✅ 成果认可：赢得家长与学生一致好评，荣获「优秀辅导奖」</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 技能矩阵 -->
+      <h3 class="matrix-title reveal">技能矩阵 <span class="en-sub">TOOLKIT MATRIX</span></h3>
+      <div class="skill-matrix" style="margin-top:20px;">
+        <div class="skill-category reveal" style="--d:0ms;">
+          <h3>语言 & 编程</h3>
+          <div class="skill-item"><div class="skill-label"><span>Python</span><span>75%</span></div><div class="progress-bar"><div class="progress-fill" data-w="75"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>HTML/CSS</span><span>60%</span></div><div class="progress-bar"><div class="progress-fill" data-w="60"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>SQL</span><span>50%</span></div><div class="progress-bar"><div class="progress-fill" data-w="50"></div></div></div>
+        </div>
+        <div class="skill-category reveal" style="--d:100ms;">
+          <h3>工具 & 设计</h3>
+          <div class="skill-item"><div class="skill-label"><span>Vibe Coding</span><span>85%</span></div><div class="progress-bar"><div class="progress-fill" data-w="85"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>PPT 设计</span><span>95%</span></div><div class="progress-bar"><div class="progress-fill" data-w="95"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>AI 辅助工具</span><span>85%</span></div><div class="progress-bar"><div class="progress-fill" data-w="85"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>Excel</span><span>70%</span></div><div class="progress-bar"><div class="progress-fill" data-w="70"></div></div></div>
+        </div>
+        <div class="skill-category reveal" style="--d:200ms;">
+          <h3>AIGC & 剪辑</h3>
+          <div class="skill-item"><div class="skill-label"><span>AI 绘画 / AIGC</span><span>85%</span></div><div class="progress-bar"><div class="progress-fill" data-w="85"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>视频剪辑</span><span>80%</span></div><div class="progress-bar"><div class="progress-fill" data-w="80"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>AI 视频生成</span><span>75%</span></div><div class="progress-bar"><div class="progress-fill" data-w="75"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>图像后期</span><span>78%</span></div><div class="progress-bar"><div class="progress-fill" data-w="78"></div></div></div>
+        </div>
+        <div class="skill-category reveal" style="--d:300ms;">
+          <h3>领域知识</h3>
+          <div class="skill-item"><div class="skill-label"><span>金融数学</span><span>70%</span></div><div class="progress-bar"><div class="progress-fill" data-w="70"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>概率统计</span><span>75%</span></div><div class="progress-bar"><div class="progress-fill" data-w="75"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>计量经济</span><span>60%</span></div><div class="progress-bar"><div class="progress-fill" data-w="60"></div></div></div>
+        </div>
+        <div class="skill-category reveal" style="--d:400ms;">
+          <h3>沟通能力</h3>
+          <div class="skill-item"><div class="skill-label"><span>沟通表达</span><span>90%</span></div><div class="progress-bar"><div class="progress-fill" data-w="90"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>倾听共情</span><span>85%</span></div><div class="progress-bar"><div class="progress-fill" data-w="85"></div></div></div>
+          <div class="skill-item"><div class="skill-label"><span>教学引导</span><span>88%</span></div><div class="progress-bar"><div class="progress-fill" data-w="88"></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= 04 证书 ======= -->
+    <svg class="water-deco" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 45 Q 100 18 200 45 T 400 45 T 600 45 T 800 45 T 1000 45 T 1200 45" stroke-width="3"/>
+      <path d="M0 58 Q 100 84 200 58 T 400 58 T 600 58 T 800 58 T 1000 58 T 1200 58" stroke-width="2"/>
+      <path d="M0 32 Q 150 52 300 32 T 600 32 T 900 32 T 1200 32" stroke-width="1.5"/>
+    </svg>
+    <section id="certs" class="section">
+      <div class="sec-tag reveal">04 <span class="slash">/</span> <span class="en">CERTIFICATES</span></div>
+      <h2 class="sec-title reveal" style="--d:60ms;">认证资质</h2>
+      <p class="sec-desc reveal" style="--d:100ms;">四项 AI 领域权威认证 + 一项国家级职业能力证书，点击可放大查看。</p>
+      <div class="cert-grid">
+        <div class="cert-item reveal" style="--d:0ms;" data-img="人工智能高级训练师.jpg"><img src="人工智能高级训练师.jpg" alt="阿里人工智能高级训练师证书" loading="lazy"><div class="cert-name">阿里云 · 人工智能高级训练师</div></div>
+        <div class="cert-item reveal" style="--d:80ms;" data-img="讯飞Prompt工程师.jpg"><img src="讯飞Prompt工程师.jpg" alt="科大讯飞 Prompt 工程师认证" loading="lazy"><div class="cert-name">科大讯飞 · Prompt 工程师</div></div>
+        <div class="cert-item reveal" style="--d:160ms;" data-img="智能体工程师.jpg"><img src="智能体工程师.jpg" alt="科大讯飞智能体工程师认证" loading="lazy"><div class="cert-name">科大讯飞 · 智能体工程师</div></div>
+        <div class="cert-item reveal" style="--d:240ms;" data-img="华为人工智能技能认证.jpg"><img src="华为人工智能技能认证.jpg" alt="华为人工智能技能认证" loading="lazy"><div class="cert-name">华为云 · 人工智能技能认证</div></div>
+        <div class="cert-item reveal" style="--d:320ms;" data-img="证书.jpg"><img src="证书.jpg" alt="人工智能训练师证书（初级）" loading="lazy"><div class="cert-name">人工智能训练师（初级）</div></div>
+      </div>
+    </section>
+
+    <!-- ======= 05 教育 ======= -->
+    <section id="education" class="section">
+      <div class="sec-tag reveal">05 <span class="slash">/</span> <span class="en">EDUCATION</span></div>
+      <h2 class="sec-title reveal" style="--d:60ms;">教育经历</h2>
+      <div class="sec-rule reveal" style="--d:100ms;"></div>
+      <div class="edu-card reveal">
+        <div class="edu-text">
+          <h3>山东财经大学</h3>
+          <div class="edu-meta">金融数学 · 大一本科在读 · 2026 年入学</div>
+          <p style="color:var(--text-secondary); font-size:.95rem;">
+            主修课程：金融数学、概率论与数理统计、金融工程、计量经济学、Python 程序设计、数据库原理等。
+          </p>
+          <div class="chips">
+            <span>学习优胜奖</span><span>三好学生</span><span>学习标兵</span><span>联考二等奖</span><span>联考三等奖</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= 06 联系 ======= -->
+    <svg class="water-deco" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 45 Q 100 18 200 45 T 400 45 T 600 45 T 800 45 T 1000 45 T 1200 45" stroke-width="3"/>
+      <path d="M0 58 Q 100 84 200 58 T 400 58 T 600 58 T 800 58 T 1000 58 T 1200 58" stroke-width="2"/>
+      <path d="M0 32 Q 150 52 300 32 T 600 32 T 900 32 T 1200 32" stroke-width="1.5"/>
+    </svg>
+    <section id="contact" class="section" style="position:relative;">
+      <div class="sec-tag reveal">06 <span class="slash">/</span> <span class="en">SAY HELLO</span></div>
+      <h2 class="sec-title reveal" style="--d:60ms;">联系我</h2>
+      <div class="sec-rule reveal" style="--d:100ms;"></div>
+      <div class="contact-wrap reveal">
+        <div class="contact-list" style="flex:1;">
+          <div class="contact-item" id="telItem" role="button" tabindex="0">
+            <span class="ci-ico">📞</span>
+            <span><span class="ci-label">PHONE</span><br><span class="ci-val">15865660153</span></span>
+          </div>
+          <div class="contact-item" id="copyEmailBtn2" role="button" tabindex="0">
+            <span class="ci-ico">📧</span>
+            <span><span class="ci-label">EMAIL · 点击复制</span><br><span class="ci-val">wangmengyu88888888@qq.com</span></span>
+          </div>
+          <div class="contact-item" id="copyWechatBtn2" role="button" tabindex="0">
+            <span class="ci-ico">💬</span>
+            <span><span class="ci-label">WECHAT · 点击复制</span><br><span class="ci-val">w15376106155</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= 页脚 ======= -->
+    <footer>
+      <div class="foot-brand">WANG MENG YU ✳ PORTFOLIO</div>
+      <p>© 2026 王梦雨 · 金融数学 × AI 应用 × 视觉叙事</p>
+      <p style="font-size:.75rem; margin-top:6px;">把想法做出来，再一步步改好。</p>
+    </footer>
+  </div>
+
+  <!-- 返回顶部 -->
+  <button class="back-top" id="backTop" aria-label="返回顶部">↑</button>
+
+  <!-- 图片放大模态 -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="图片放大预览">
+    <button class="lightbox-close" id="lightboxClose" aria-label="关闭">✕</button>
+    <img src="" alt="放大预览" id="lightboxImg">
+  </div>
+
+  <script>
+    // ========== 防爬虫联系方式 ==========
+    (function initContact() {
+      const email = 'wangmengyu88888888' + '@' + 'qq.com';
+      const wechat = 'w15376106155';
+      function bindCopy(el, text, okText, resetText) {
+        if (!el) return;
+        const handler = () => {
+          const done = () => {
+            const label = el.querySelector('.ci-val');
+            const orig = label ? label.textContent : null;
+            if (label) label.textContent = okText;
+            else el.textContent = okText;
+            setTimeout(() => { if (label && orig) label.textContent = orig; else el.textContent = resetText; }, 1800);
+          };
+          if (navigator.clipboard) navigator.clipboard.writeText(text).then(done).catch(() => prompt('请手动复制:', text));
+          else prompt('请手动复制:', text);
+        };
+        el.addEventListener('click', handler);
+        el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
+      }
+      bindCopy(document.getElementById('copyEmailBtn'), email, '✅ 已复制', '📧 复制邮箱');
+      bindCopy(document.getElementById('copyWechatBtn'), wechat, '✅ 已复制', '💬 微信号');
+      bindCopy(document.getElementById('copyEmailBtn2'), email, '已复制到剪贴板 ✓', 'wangmengyu88888888@qq.com');
+      bindCopy(document.getElementById('copyWechatBtn2'), wechat, '已复制到剪贴板 ✓', 'w15376106155');
+      document.getElementById('telItem').addEventListener('click', () => location.href = 'tel:15865660153');
+    })();
+
+    // ========== 深浅色 ==========
+    (function theme() {
+      const toggle = document.getElementById('themeToggle');
+      const html = document.documentElement;
+      if (localStorage.getItem('theme') === 'dark') html.setAttribute('data-theme', 'dark');
+      toggle.addEventListener('click', () => {
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        if (isDark) { html.removeAttribute('data-theme'); localStorage.setItem('theme', 'light'); }
+        else { html.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', 'dark'); }
+      });
+    })();
+
+    // ========== 打印 / 返回顶部 ==========
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+    (function backTop() {
+      const btn = document.getElementById('backTop');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 420) btn.classList.add('show'); else btn.classList.remove('show');
+      }, { passive: true });
+      btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    })();
+
+    // ========== 跑马灯内容复制一份实现无缝循环 ==========
+    (function marquee() {
+      const track = document.getElementById('marqueeTrack');
+      track.innerHTML += track.innerHTML;
+    })();
+
+    // ========== 滚动入场 ==========
+    (function reveal() {
+      const els = document.querySelectorAll('.reveal');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+      els.forEach(el => io.observe(el));
+    })();
+
+    // ========== 数字滚动 ==========
+    (function countUp() {
+      const nums = document.querySelectorAll('[data-count]');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          if (!en.isIntersecting) return;
+          const el = en.target, target = parseInt(el.dataset.count, 10);
+          const t0 = performance.now(), dur = 1100;
+          (function tick(t) {
+            const p = Math.min((t - t0) / dur, 1);
+            el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+            if (p < 1) requestAnimationFrame(tick);
+          })(t0);
+          io.unobserve(el);
+        });
+      }, { threshold: 0.5 });
+      nums.forEach(n => io.observe(n));
+    })();
+
+    // ========== Tabs（ARIA + 键盘） ==========
+    (function tabs() {
+      const container = document.getElementById('experienceTabs');
+      const tabBtns = Array.from(container.querySelectorAll('[role="tab"]'));
+      const panels = Array.from(container.querySelectorAll('[role="tabpanel"]'));
+      function activate(tab) {
+        tabBtns.forEach(b => { b.setAttribute('aria-selected', 'false'); b.tabIndex = -1; });
+        tab.setAttribute('aria-selected', 'true'); tab.tabIndex = 0;
+        const id = tab.getAttribute('aria-controls');
+        panels.forEach(p => p.hidden = (p.id !== id));
+      }
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => activate(btn));
+        btn.addEventListener('keydown', (e) => {
+          const i = tabBtns.indexOf(btn);
+          if (e.key === 'ArrowRight') { e.preventDefault(); activate(tabBtns[(i + 1) % tabBtns.length]); }
+          else if (e.key === 'ArrowLeft') { e.preventDefault(); activate(tabBtns[(i - 1 + tabBtns.length) % tabBtns.length]); }
+        });
+      });
+      activate(tabBtns.find(b => b.getAttribute('aria-selected') === 'true') || tabBtns[0]);
+    })();
+
+    // ========== 图片放大 ==========
+    (function lightbox() {
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightboxImg');
+      const closeBtn = document.getElementById('lightboxClose');
+      function open(src) { lbImg.src = src; lb.classList.add('active'); document.body.style.overflow = 'hidden'; }
+      function close() { lb.classList.remove('active'); document.body.style.overflow = ''; }
+      document.querySelectorAll('[data-img]').forEach(el => {
+        el.addEventListener('click', () => { const s = el.getAttribute('data-img'); if (s) open(s); });
+        el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const s = el.getAttribute('data-img'); if (s) open(s); } });
+      });
+      closeBtn.addEventListener('click', close);
+      lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && lb.classList.contains('active')) close(); });
+    })();
+
+    // ========== 进度条入场动画 ==========
+    (function progress() {
+      const fills = document.querySelectorAll('.progress-fill');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          if (en.isIntersecting) {
+            const f = en.target;
+            requestAnimationFrame(() => { f.style.width = f.dataset.w + '%'; });
+            io.unobserve(f);
+          }
+        });
+      }, { threshold: 0.4 });
+      fills.forEach(f => io.observe(f));
+    })();
+    // ========== 背景视频强制播放：确保仙鹤真实振翅、瀑布持续流动 ==========
+    (function playBgVideos() {
+      const vids = Array.from(document.querySelectorAll('.ink-waterfall, .crane-layer video'));
+      const kick = () => vids.forEach(v => {
+        v.muted = true;
+        const p = v.play();
+        if (p && p.catch) p.catch(() => {});
+      });
+      kick();
+      vids.forEach(v => v.addEventListener('loadeddata', kick));
+      ['pointerdown', 'touchstart', 'keydown', 'scroll'].forEach(ev => {
+        window.addEventListener(ev, kick, { once: true, passive: true });
+      });
+    })();
+  </script>
+</body>
+</html>
